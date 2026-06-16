@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    Expense Tracker Dashboard
+</h1>
+
+<div class="row">
+
+
+<div class="col-md-3 mb-3">
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h5>Total Expenses</h5>
+
+            <h2>
+                ₹{{ total_expense }}
+            </h2>
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3 mb-3">
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h5>Monthly Budget</h5>
+
+            <h2>
+                ₹{{ monthly_budget }}
+            </h2>
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3 mb-3">
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h5>Remaining Budget</h5>
+
+            <h2>
+                ₹{{ remaining_budget }}
+            </h2>
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3 mb-3">
+    <div class="card shadow">
+        <div class="card-body">
+
+            <h5>Total Transactions</h5>
+
+            <h2>
+                {{ total_transactions }}
+            </h2>
+
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+<form method="GET" class="mb-4">
+
+
+<input
+    type="text"
+    name="search"
+    placeholder="Search Expense"
+    class="form-control mb-2"
+>
+
+<select
+    name="category"
+    class="form-control mb-2"
+>
+
+    <option value="">
+        All Categories
+    </option>
+
+    <option>Food</option>
+    <option>Travel</option>
+    <option>Shopping</option>
+    <option>Bills</option>
+    <option>Entertainment</option>
+    <option>Other</option>
+
+</select>
+
+<button class="btn btn-primary">
+    Filter
+</button>
+
+
+</form>
+
+<table class="table table-bordered">
+
+
+<tr>
+    <th>Title</th>
+    <th>Amount</th>
+    <th>Category</th>
+    <th>Date</th>
+    <th>Action</th>
+</tr>
+
+{% for expense in expenses %}
+
+<tr>
+
+    <td>{{ expense.title }}</td>
+
+    <td>₹{{ expense.amount }}</td>
+
+    <td>{{ expense.category }}</td>
+
+    <td>{{ expense.date }}</td>
+
+    <td>
+
+        <a
+            href="/edit/{{ expense.id }}/"
+            class="btn btn-success btn-sm"
+        >
+            Edit
+        </a>
+
+        <a
+            href="/delete/{{ expense.id }}/"
+            class="btn btn-danger btn-sm"
+        >
+            Delete
+        </a>
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+<hr>
+
+<h3>
+    Expense Distribution
+</h3>
+
+<canvas id="expenseChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const categories =
+{{ categories|safe }};
+
+new Chart(
+    document.getElementById(
+        'expenseChart'
+    ),
+    {
+        type: 'pie',
+
+        data: {
+
+            labels: Object.keys(
+                categories
+            ),
+
+            datasets: [{
+                data: Object.values(
+                    categories
+                )
+            }]
+        }
+    }
+);
+
+</script>
+
+<hr>
+
+<h3>
+    Recent Expenses
+</h3>
+
+<table class="table table-striped">
+
+
+<tr>
+    <th>Title</th>
+    <th>Amount</th>
+    <th>Category</th>
+</tr>
+
+{% for exp in recent_expenses %}
+
+<tr>
+
+    <td>{{ exp.title }}</td>
+
+    <td>₹{{ exp.amount }}</td>
+
+    <td>{{ exp.category }}</td>
+
+</tr>
+
+{% endfor %}
+
+
+</table>
+
+{% endblock %}
